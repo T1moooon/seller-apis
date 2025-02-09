@@ -11,6 +11,24 @@ logger = logging.getLogger(__file__)
 
 
 def get_product_list(page, campaign_id, access_token):
+    """
+    Получает список товаров из Яндекс.Маркета.
+
+    Args:
+        page (str): Токен страницы для пагинации.
+        campaign_id (str): Идентификатор кампании в Яндекс.Маркете.
+        access_token (str): Токен доступа для авторизации в API Яндекс.Маркета.
+
+    Returns:
+        dict: Словарь с информацией о товарах.
+
+    Examples:
+        >>> get_product_list(page, campaign_id, access_token)
+        Список товаров
+
+        >>> get_product_list("invalid_token", campaign_id, access_token)
+        requests.exceptions.HTTPError: 400 Client Error: Bad Request
+    """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -30,6 +48,24 @@ def get_product_list(page, campaign_id, access_token):
 
 
 def update_stocks(stocks, campaign_id, access_token):
+    """
+    Обновляет информацию о количестве товаров на складе в Яндекс.Маркете.
+
+    Args:
+        stocks (list): Список с информацией о товарах на складе.
+        campaign_id (str): Идентификатор кампании в Яндекс.Маркете.
+        access_token (str): Токен доступа для авторизации в API Яндекс.Маркета.
+
+    Returns:
+        dict: Словарь с результатами обновления остатков.
+
+    Examples:
+        >>> update_stocks(stocks, campaign_id, access_token)
+        Обновляет информацию
+
+        >>> update_stocks([], campaign_id, access_token)
+        requests.exceptions.HTTPError: 400 Client Error: Bad Request
+    """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -46,6 +82,24 @@ def update_stocks(stocks, campaign_id, access_token):
 
 
 def update_price(prices, campaign_id, access_token):
+    """
+    Обновляет цены товаров в Яндекс.Маркете.
+
+    Args:
+        prices (list): Список с информацией о ценах на товары.
+        campaign_id (str): Идентификатор кампании в Яндекс.Маркете.
+        access_token (str): Токен доступа для авторизации в API Яндекс.Маркета.
+
+    Returns:
+        dict: Словарь с результатами обновления цен.
+
+    Examples:
+        >>> update_price(prices, campaign_id, access_token)
+        Обновляет цены
+
+        >>> update_price([], campaign_id, access_token)
+        requests.exceptions.HTTPError: 400 Client Error: Bad Request
+    """
     endpoint_url = "https://api.partner.market.yandex.ru/"
     headers = {
         "Content-Type": "application/json",
@@ -62,7 +116,23 @@ def update_price(prices, campaign_id, access_token):
 
 
 def get_offer_ids(campaign_id, market_token):
-    """Получить артикулы товаров Яндекс маркета"""
+    """
+    Получает артикулы товаров из Яндекс.Маркета.
+
+    Args:
+        campaign_id (str): Идентификатор кампании в Яндекс.Маркете.
+        market_token (str): Токен доступа для авторизации в API Яндекс.Маркета.
+
+    Returns:
+        list: Список артикулов товаров.
+
+    Examples:
+        >>> get_offer_ids(campaign_id, market_token)
+        ["123", "456", "789"]
+
+        >>> get_offer_ids("invalid_campaign", market_token)
+        requests.exceptions.HTTPError: 400 Client Error: Bad Request
+    """
     page = ""
     product_list = []
     while True:
@@ -78,6 +148,24 @@ def get_offer_ids(campaign_id, market_token):
 
 
 def create_stocks(watch_remnants, offer_ids, warehouse_id):
+    """
+    Создает список с информацией о количестве товаров на складе для Яндекс.Маркета.
+
+    Args:
+        watch_remnants (list): Список с данными о товарах.
+        offer_ids (list): Список артикулов товаров.
+        warehouse_id (str): Идентификатор склада.
+
+    Returns:
+        list: Список словарей с информацией о количестве товаров на складе.
+
+    Examples:
+        >>> create_stocks(watch_remnants, offer_ids, warehouse_id)
+        Создаёт список
+
+        >>> create_stocks([], ["123"], "warehouse_456")
+        ValueError: Если входные данные некорректны
+    """
     # Уберем то, что не загружено в market
     stocks = list()
     date = str(datetime.datetime.utcnow().replace(microsecond=0).isoformat() + "Z")
@@ -123,6 +211,23 @@ def create_stocks(watch_remnants, offer_ids, warehouse_id):
 
 
 def create_prices(watch_remnants, offer_ids):
+    """
+    Создает список с информацией о ценах на товары для Яндекс.Маркета.
+
+    Args:
+        watch_remnants (list): Список с данными о товарах.
+        offer_ids (list): Список артикулов товаров.
+
+    Returns:
+        list: Список словарей с информацией о ценах.
+
+    Examples:
+        >>> create_prices(watch_remnants, offer_ids)
+        Список с информацией о ценах
+
+        >>> create_prices([], offer_ids)
+        []
+    """
     prices = []
     for watch in watch_remnants:
         if str(watch.get("Код")) in offer_ids:
